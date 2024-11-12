@@ -5,6 +5,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,6 +23,9 @@ import com.google.firebase.database.ValueEventListener;
 
 public class HomeFragment extends Fragment {
     private TextView textField;
+    private ImageView hexagon;
+
+    Animation Rotate_Animation, Bottom_Animation, Left_Animation;
 
     @Nullable
     @Override
@@ -30,6 +36,14 @@ public class HomeFragment extends Fragment {
         DatabaseReference myRef = database.getReference("neo_6m");
 
         textField = view.findViewById(R.id.test);
+        hexagon = view.findViewById(R.id.hexagon);
+
+        Rotate_Animation = AnimationUtils.loadAnimation(getContext(), R.anim.rotateanim);
+        textField.setAnimation(Rotate_Animation);
+        hexagon.setAnimation(Rotate_Animation);
+//        Left_Animation = AnimationUtils.loadAnimation(this, R.anim.leftanim);
+//        Bottom_Animation = AnimationUtils.loadAnimation(this, R.anim.bottomanim);
+
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
