@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "641088905898",
+    "firebase_url": "https://smart-motorcycle-dc7e9-default-rtdb.firebaseio.com",
+    "project_id": "smart-motorcycle-dc7e9",
+    "storage_bucket": "smart-motorcycle-dc7e9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:641088905898:android:05222d076b026de342a6d3",
+        "android_client_info": {
+          "package_name": "com.tri.smartmocy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD57nz5eQjDjebY6ReSJyeGA7CKKn25G3E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:641088905898:android:a7e9a7e737fa9aed42a6d3",
+        "android_client_info": {
+          "package_name": "com.tri.smartmotor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD57nz5eQjDjebY6ReSJyeGA7CKKn25G3E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:641088905898:android:76d4f995a8123d0142a6d3",
+        "android_client_info": {
+          "package_name": "com.tri.smartmotorcycle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD57nz5eQjDjebY6ReSJyeGA7CKKn25G3E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
