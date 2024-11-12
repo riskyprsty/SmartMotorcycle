@@ -33,7 +33,7 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("neo_6m");
+        DatabaseReference neo6m = database.getReference("neo_6m");
 
         textField = view.findViewById(R.id.test);
         hexagon = view.findViewById(R.id.hexagon);
@@ -45,7 +45,7 @@ public class HomeFragment extends Fragment {
 //        Bottom_Animation = AnimationUtils.loadAnimation(this, R.anim.bottomanim);
 
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        neo6m.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Double lat = dataSnapshot.child("lat").getValue(Double.class);

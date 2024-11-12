@@ -1,8 +1,6 @@
 package com.tri.smartmotorcycle;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = new HomeFragment();
                     break;
                 case 1:
-                    selectedFragment = new SearchFragment();
+                    selectedFragment = new MapsFragment();
                     break;
                 case 2:
                     selectedFragment = new ProfileFragment();
