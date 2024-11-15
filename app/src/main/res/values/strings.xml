@@ -5,6 +5,7 @@
     <string name="tri">Development by Kelompok SIX</string>
     <string name="hexagon_img">Hexagon Asset</string>
     <string name="open_nav">Buka Navigasi</string>
+    <string name="vehicle_name_placeholder">Scan QR dahulu!</string>
     <string name="close_nav">Tutup navigasi</string>
     <string name="logout">Logout</string>
     <string name="sidenav_placeholder">Vehicle Placeholder</string>
