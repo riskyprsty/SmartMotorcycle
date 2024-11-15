@@ -22,11 +22,34 @@
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        app:backgroundColor="@color/nav_bg"
+        android:background="@drawable/background_gradient_nav"
+        app:backgroundColor="@android:color/transparent"
         app:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav_menu" />
+
+    <ImageView
+        android:id="@+id/circular_button"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/tengah"
+        android:layout_marginTop="-100dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frame_layout" />
+    <ImageView
+        android:id="@+id/power_button"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:src="@drawable/qr_scan"
+        app:layout_constraintBottom_toBottomOf="@+id/circular_button"
+        app:layout_constraintEnd_toEndOf="@+id/circular_button"
+        app:layout_constraintStart_toStartOf="@+id/circular_button"
+        app:layout_constraintTop_toTopOf="@+id/circular_button" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

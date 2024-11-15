@@ -1,5 +1,7 @@
 package com.tri.smartmotorcycle;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;

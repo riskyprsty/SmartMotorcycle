@@ -1,14 +1,9 @@
-<!-- res/drawable/angled_gradient_background.xml -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape android:shape="rectangle">
-            <gradient
-                android:startColor="#210328"
-                android:endColor="#410548"
-                android:angle="85"
-                android:centerX="0.075"
-                android:centerY="0.887"
-                android:type="linear" />
-        </shape>
-    </item>
-</layer-list>
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="175"
+        android:startColor="#0A314E"
+        android:centerColor="#0B0121"
+        android:endColor="#16171B"
+        android:type="linear" />
+</shape>
