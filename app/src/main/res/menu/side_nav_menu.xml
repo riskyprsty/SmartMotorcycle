@@ -7,16 +7,7 @@
         <item
             android:id="@+id/nav_first"
             android:icon="@drawable/home_24px"
-            android:title="First" />
-
-        <item
-            android:id="@+id/nav_second"
-            android:icon="@drawable/home_24px"
-            android:title="Second" />
-        <item
-            android:id="@+id/nav_third"
-            android:icon="@drawable/home_24px"
-            android:title="Third" />
+            android:title="@string/sidenav_placeholder" />
     </group>
 
     <item
@@ -26,7 +17,7 @@
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_logout"
-                android:title="Logout"/>
+                android:title="@string/logout"/>
         </menu>
     </item>
 </menu>

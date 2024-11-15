@@ -1,7 +1,5 @@
 package com.tri.smartmotorcycle;
 
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorSet;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,10 +21,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Locale;
+
 
 public class HomeFragment extends Fragment {
     private TextView textField;
     private ImageView hexagon;
+    private MotorViewModel motorViewModel;
+    private TextView textField2;
 
     Animation Rotate_Animation, Bottom_Animation, Left_Animation;
 
@@ -38,13 +41,22 @@ public class HomeFragment extends Fragment {
         DatabaseReference neo6m = database.getReference("neo_6m");
 
         textField = view.findViewById(R.id.test);
+        textField2 = view.findViewById(R.id.test2);
         hexagon = view.findViewById(R.id.hexagon);
 
-        Rotate_Animation = AnimationUtils.loadAnimation(getContext(), R.anim.rotateanim);
+        motorViewModel = new ViewModelProvider(requireActivity()).get(MotorViewModel.class);
+
+        motorViewModel.getTemperatureData().observe(getViewLifecycleOwner(), temperature -> {
+            if (temperature != null) {
+                textField2.setText(String.format(Locale.getDefault(), "%.2f °C", temperature));
+            } else {
+                textField2.setText("No Data");
+            }
+        });
+
+        Rotate_Animation = AnimationUtils.loadAnimation(getContext(), R.anim.fadeanim);
         textField.setAnimation(Rotate_Animation);
         hexagon.setAnimation(Rotate_Animation);
-//        Left_Animation = AnimationUtils.loadAnimation(this, R.anim.leftanim);
-//        Bottom_Animation = AnimationUtils.loadAnimation(this, R.anim.bottomanim);
 
 
         neo6m.addValueEventListener(new ValueEventListener() {

@@ -10,6 +10,7 @@
 
 
     <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profileImage"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/profile_logo"
@@ -21,12 +22,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Eru Chitanda"
+        android:id="@+id/nameTV"
         android:textStyle="bold"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Last updated 12 Nov 2024"
         android:textSize="14sp"
+        android:id="@+id/mailTV"
         android:layout_marginBottom="26dp"/>
 
 

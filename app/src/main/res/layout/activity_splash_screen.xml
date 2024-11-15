@@ -48,11 +48,21 @@
         android:textSize="14sp"
         android:typeface="normal" />
 
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/btn_google_signin"
+        android:layout_width="200sp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/text_deskripsi"
+        android:layout_marginTop="15dp"
+        />
+
     <TextView
         android:id="@+id/text_subdeskripsi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/text_deskripsi"
+        android:layout_below="@id/btn_google_signin"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:fontFamily="@font/sf_pro_bold"
@@ -61,4 +71,5 @@
         android:textColor="@color/white"
         android:textSize="13sp"
         android:typeface="normal" />
+
 </RelativeLayout>

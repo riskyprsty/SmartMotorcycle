@@ -16,4 +16,8 @@
         <item name="color">@color/white</item>  <!-- sesuaikan warna -->
     </style>
 
+    <style name="roundedImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>
