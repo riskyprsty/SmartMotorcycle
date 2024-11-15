@@ -1,55 +1,83 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:fitsSystemWindows="true"
+    tools:context=".MainActivity"
+    tools:openDrawer="start">
 
-    <FrameLayout
-        android:id="@+id/frame_layout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </FrameLayout>
-
-
-    <me.ibrahimsn.lib.SmoothBottomBar
-        android:id="@+id/bottomBar"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:background="@drawable/background_gradient_nav"
-        app:backgroundColor="@android:color/transparent"
-        app:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav_menu" />
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/circular_button"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@drawable/tengah"
-        android:layout_marginTop="-100dp"
-        app:layout_constraintBottom_toBottomOf="@+id/bottomBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frame_layout" />
-    <ImageView
-        android:id="@+id/power_button"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
-        android:src="@drawable/qr_scan"
-        app:layout_constraintBottom_toBottomOf="@+id/circular_button"
-        app:layout_constraintEnd_toEndOf="@+id/circular_button"
-        app:layout_constraintStart_toStartOf="@+id/circular_button"
-        app:layout_constraintTop_toTopOf="@+id/circular_button" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_hamburger"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:elevation="0dp"
+            android:src="@drawable/ic_menu"
+            android:stateListAnimator="@null"
+            app:backgroundTint="@android:color/transparent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- FrameLayout tanpa Toolbar -->
+        <FrameLayout
+            android:id="@+id/frame_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- BottomBar -->
+        <me.ibrahimsn.lib.SmoothBottomBar
+            android:id="@+id/bottomBar"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/background_gradient_nav"
+            app:backgroundColor="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/bottom_nav_menu"
+            app:textColor="@color/white" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Circular Button di atas BottomBar -->
+        <ImageView
+            android:id="@+id/circular_button"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginBottom="-32dp"
+            android:src="@drawable/tengah"
+            app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- Power Button di tengah Circular Button -->
+        <ImageView
+            android:id="@+id/power_button"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:src="@drawable/qr_scan"
+            app:layout_constraintBottom_toBottomOf="@+id/circular_button"
+            app:layout_constraintEnd_toEndOf="@+id/circular_button"
+            app:layout_constraintStart_toStartOf="@+id/circular_button"
+            app:layout_constraintTop_toTopOf="@+id/circular_button" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/side_nav_menu" />
+
+</androidx.drawerlayout.widget.DrawerLayout>

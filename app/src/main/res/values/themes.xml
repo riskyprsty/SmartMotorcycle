@@ -2,7 +2,10 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.SmartMotorcycle" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:forceDarkAllowed" tools:targetApi="q"> false </item>
+
     </style>
 
+
     <style name="Theme.SmartMotorcycle" parent="Base.Theme.SmartMotorcycle" />
+
 </resources>
