@@ -14,18 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.Locale;
 
 
 public class HomeFragment extends Fragment {
-    private TextView textField;
+    private TextView locationText;
     private ImageView hexagon;
     private MotorViewModel motorViewModel;
     private TextView textField2;
@@ -37,10 +30,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference neo6m = database.getReference("neo_6m");
-
-        textField = view.findViewById(R.id.test);
+        locationText = view.findViewById(R.id.test);
         textField2 = view.findViewById(R.id.test2);
         hexagon = view.findViewById(R.id.hexagon);
 
@@ -54,28 +44,29 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        motorViewModel.getLatitude().observe(getViewLifecycleOwner(), latitude -> updateLocationText());
+        motorViewModel.getLongitude().observe(getViewLifecycleOwner(), longitude -> updateLocationText());
+        motorViewModel.getTimestamp().observe(getViewLifecycleOwner(), timestamp -> updateLocationText());
+
         Rotate_Animation = AnimationUtils.loadAnimation(getContext(), R.anim.fadeanim);
-        textField.setAnimation(Rotate_Animation);
+        locationText.setAnimation(Rotate_Animation);
         hexagon.setAnimation(Rotate_Animation);
 
-
-        neo6m.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Double lat = dataSnapshot.child("lat").getValue(Double.class);
-                Double lng = dataSnapshot.child("lng").getValue(Double.class);
-                String res = "Lat: " + String.valueOf(lat) + "\nLong: " + String.valueOf(lng);
-                textField.setText(res);
-                Log.d("firebase", res);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                System.err.println("Failed to read value: " + error.toException());
-            }
-        });
-
         return view;
+    }
+
+    private void updateLocationText() {
+        Double latitude = motorViewModel.getLatitude().getValue();
+        Double longitude = motorViewModel.getLongitude().getValue();
+        Long timestamp = motorViewModel.getTimestamp().getValue();
+
+        if (latitude != null && longitude != null && timestamp != null) {
+            String locationInfo = String.format(Locale.getDefault(),
+                    "Lat: %.6f\nLng: %.6f\nTimestamp: %d", latitude, longitude, timestamp);
+            locationText.setText(locationInfo);
+        } else {
+            locationText.setText("Location: N/A");
+        }
     }
 }
 

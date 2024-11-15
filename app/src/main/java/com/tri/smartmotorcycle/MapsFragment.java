@@ -8,12 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,6 +23,7 @@ import java.util.Date;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap gMap;
+    private MotorViewModel motorViewModel;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -72,50 +68,53 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_maps, container, false);
-
-
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Get the SupportMapFragment and request notification when the map is ready to be used.
+        motorViewModel = new ViewModelProvider(requireActivity()).get(MotorViewModel.class);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference neo6m = database.getReference("neo_6m");
+        this.gMap = googleMap;
 
-        neo6m.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Double lat = dataSnapshot.child("lat").getValue(Double.class);
-                Double lng = dataSnapshot.child("lng").getValue(Double.class);
-                long timestamp = dataSnapshot.child("timestamp").getValue(Long.class);
+        motorViewModel = new ViewModelProvider(requireActivity()).get(MotorViewModel.class);
 
-                Date date = new Date(timestamp);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                String formattedDate = dateFormat.format(date);
+        motorViewModel.getLatitude().observe(getViewLifecycleOwner(), latitude -> updateMapMarker());
+        motorViewModel.getLongitude().observe(getViewLifecycleOwner(), longitude -> updateMapMarker());
+        motorViewModel.getTimestamp().observe(getViewLifecycleOwner(), timestamp -> updateMapMarker());
+    }
 
-                String res = "Lat: " + String.valueOf(lat) + "\nLong: " + String.valueOf(lng) + "\nTime: " + formattedDate;
-                LatLng location = new LatLng(lat, lng);
-                googleMap.addMarker(new MarkerOptions().position(location).title("Updated " + formattedDate));
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,  12));
+    private void updateMapMarker() {
+        if (gMap == null) return;
 
-                Log.d("firebase", res);
-            }
+        Double latitude = motorViewModel.getLatitude().getValue();
+        Double longitude = motorViewModel.getLongitude().getValue();
+        Long timestamp = motorViewModel.getTimestamp().getValue();
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                System.err.println("Failed to read value: " + error.toException());
-            }
-        });
+        if (latitude != null && longitude != null && timestamp != null) {
+            gMap.clear();
 
+            Date date = new Date(timestamp);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm:ss");
+            String terakirUpdate = simpleDateFormat.format(date);
+
+            LatLng location = new LatLng(latitude, longitude);
+            gMap.addMarker(new MarkerOptions()
+                    .position(location)
+                    .title("Updated " + terakirUpdate));
+
+            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+        }
     }
 }
