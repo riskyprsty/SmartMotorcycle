@@ -12,15 +12,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class MotorViewModel extends ViewModel {
+public class VehicleViewModel extends ViewModel {
     private final MutableLiveData<String> selectedVehicleId = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isPowerOn = new MutableLiveData<>();
     private final MutableLiveData<Double> temperatureData = new MutableLiveData<>();
     private final MutableLiveData<Double> latitude = new MutableLiveData<>();
     private final MutableLiveData<Double> longitude = new MutableLiveData<>();
     private final MutableLiveData<Long> timestamp = new MutableLiveData<>();
     private DatabaseReference firebaseRef;
 
-    public MotorViewModel() {
+    public VehicleViewModel() {
         firebaseRef = FirebaseDatabase.getInstance().getReference("vehicle");
     }
 
@@ -33,7 +34,12 @@ public class MotorViewModel extends ViewModel {
             selectedVehicleId.setValue(vehicleId);
             loadTemperatureData(vehicleId);
             loadLocationData(vehicleId);
+            loadMasterSwitch(vehicleId);
         }
+    }
+
+    public LiveData<Boolean> getPowerStatus() {
+        return isPowerOn;
     }
 
     public LiveData<Double> getTemperatureData() {
@@ -52,6 +58,43 @@ public class MotorViewModel extends ViewModel {
         return timestamp;
     }
 
+    public void setPowerStatus(boolean status) {
+        String vehicleId = selectedVehicleId.getValue();    
+        if (vehicleId != null) {
+            firebaseRef.child(vehicleId).child("master_switch").child("value").setValue(status).addOnSuccessListener(aVoid -> {
+                        Log.d("VehicleViewModel", "Master switch updated sukses: " + status);
+                        isPowerOn.setValue(status);
+                    })
+                    .addOnFailureListener(e -> Log.e("VehicleViewModel", "Gagal update master switch guys", e));
+        } else {
+            Log.e("VehicleViewModel", "Vehicle masih kosong");
+        }
+        isPowerOn.setValue(status);
+    }
+
+    private void loadMasterSwitch(String vehicleId) {
+        if (firebaseRef != null) {
+            firebaseRef.child(vehicleId).child("master_switch").child("value")
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Boolean value = dataSnapshot.getValue(Boolean.class);
+                            if (value != null) {
+                                Log.d("VehicleViewModel", "Master switch data retrieved: " + value);
+                            } else {
+                                Log.d("VehicleViewModel", "Master switch data is null");
+                            }
+                            isPowerOn.setValue(value);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.e("VehicleViewModel", "Failed to load master switch data.", databaseError.toException());
+                        }
+                    });
+        }
+    }
+
     // ambil data temperaturenya rek
     private void loadTemperatureData(String vehicleId) {
         if (firebaseRef != null) {
@@ -61,16 +104,16 @@ public class MotorViewModel extends ViewModel {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             Double temperature = dataSnapshot.getValue(Double.class);
                             if (temperature != null) {
-                                Log.d("MotorViewModel", "Temperature data retrieved: " + temperature);
+                                Log.d("VehicleViewModel", "Temperature data retrieved: " + temperature);
                             } else {
-                                Log.d("MotorViewModel", "Temperature data is null");
+                                Log.d("VehicleViewModel", "Temperature data is null");
                             }
                             temperatureData.setValue(temperature);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            Log.e("MotorViewModel", "Failed to load temperature data.", databaseError.toException());
+                            Log.e("VehicleViewModel", "Failed to load temperature data.", databaseError.toException());
                         }
                     });
         }
@@ -88,18 +131,18 @@ public class MotorViewModel extends ViewModel {
                             Long time = dataSnapshot.child("timestamp").getValue(Long.class);
 
                             if (lat != null && lng != null && time != null) {
-                                Log.d("MotorViewModel", "Location data retrieved: Lat=" + lat + ", Lng=" + lng + ", Timestamp=" + time);
+                                Log.d("VehicleViewModel", "Location data retrieved: Lat=" + lat + ", Lng=" + lng + ", Timestamp=" + time);
                                 latitude.setValue(lat);
                                 longitude.setValue(lng);
                                 timestamp.setValue(time);
                             } else {
-                                Log.d("MotorViewModel", "One or more location values are null");
+                                Log.d("VehicleViewModel", "One or more location values are null");
                             }
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            Log.e("MotorViewModel", "Failed to load location data.", databaseError.toException());
+                            Log.e("VehicleViewModel", "Failed to load location data.", databaseError.toException());
                         }
                     });
         }

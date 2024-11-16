@@ -36,7 +36,7 @@ import com.journeyapps.barcodescanner.ScanOptions;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
-    private MotorViewModel motorViewModel;
+    private VehicleViewModel vehicleViewModel;
 
     private VehiclePreferences vehiclePreferences;
     String selectedVehicleId = null;
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         vehiclePreferences = new VehiclePreferences(this);
-        motorViewModel = new ViewModelProvider(this).get(MotorViewModel.class);
+        vehicleViewModel = new ViewModelProvider(this).get(VehicleViewModel.class);
 
 
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         String defaultVehicleId = vehiclePreferences.getSelectedVehicleId();
         if (defaultVehicleId != null) {
-            motorViewModel.setSelectedVehicleId(defaultVehicleId);
+            vehicleViewModel.setSelectedVehicleId(defaultVehicleId);
             Toast.makeText(this, "Default vehicle: " + defaultVehicleId, Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Belum ada kendaraan! Silahkan scan QR", Toast.LENGTH_SHORT).show();
@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // Ambil vehicleId dari judul menu
             selectedVehicleId = item.getTitle().toString();
             vehiclePreferences.setSelectedVehicleId(selectedVehicleId);
-            motorViewModel.setSelectedVehicleId(selectedVehicleId);
+            vehicleViewModel.setSelectedVehicleId(selectedVehicleId);
             Toast.makeText(this, "Selected: " + selectedVehicleId, Toast.LENGTH_SHORT).show();
         }
 
@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                    selectedVehicleId = result.getContents();
                    addVehicle(selectedVehicleId);
                    vehiclePreferences.setSelectedVehicleId(selectedVehicleId);
-                   motorViewModel.setSelectedVehicleId(selectedVehicleId);
+                   vehicleViewModel.setSelectedVehicleId(selectedVehicleId);
                    dialogInterface.dismiss();
                }
            }).show();

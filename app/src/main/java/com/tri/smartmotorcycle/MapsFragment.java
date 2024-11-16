@@ -1,7 +1,6 @@
 package com.tri.smartmotorcycle;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +17,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap gMap;
-    private MotorViewModel motorViewModel;
+    private VehicleViewModel vehicleViewModel;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -76,7 +75,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        motorViewModel = new ViewModelProvider(requireActivity()).get(MotorViewModel.class);
+        vehicleViewModel = new ViewModelProvider(requireActivity()).get(VehicleViewModel.class);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
@@ -88,33 +87,37 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.gMap = googleMap;
 
-        motorViewModel = new ViewModelProvider(requireActivity()).get(MotorViewModel.class);
+        vehicleViewModel = new ViewModelProvider(requireActivity()).get(VehicleViewModel.class);
 
-        motorViewModel.getLatitude().observe(getViewLifecycleOwner(), latitude -> updateMapMarker());
-        motorViewModel.getLongitude().observe(getViewLifecycleOwner(), longitude -> updateMapMarker());
-        motorViewModel.getTimestamp().observe(getViewLifecycleOwner(), timestamp -> updateMapMarker());
+        vehicleViewModel.getLatitude().observe(getViewLifecycleOwner(), latitude -> updateMapMarker());
+        vehicleViewModel.getLongitude().observe(getViewLifecycleOwner(), longitude -> updateMapMarker());
+        vehicleViewModel.getTimestamp().observe(getViewLifecycleOwner(), timestamp -> updateMapMarker());
     }
 
     private void updateMapMarker() {
         if (gMap == null) return;
 
-        Double latitude = motorViewModel.getLatitude().getValue();
-        Double longitude = motorViewModel.getLongitude().getValue();
-        Long timestamp = motorViewModel.getTimestamp().getValue();
+        Double latitude = vehicleViewModel.getLatitude().getValue();
+        Double longitude = vehicleViewModel.getLongitude().getValue();
+        Long timestamp = vehicleViewModel.getTimestamp().getValue();
 
         if (latitude != null && longitude != null && timestamp != null) {
             gMap.clear();
 
-            Date date = new Date(timestamp);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm:ss");
-            String terakirUpdate = simpleDateFormat.format(date);
+            Date date = new Date(timestamp * 1000);
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta")); // WIB
+
+            String terakhirUpdate = simpleDateFormat.format(date);
 
             LatLng location = new LatLng(latitude, longitude);
             gMap.addMarker(new MarkerOptions()
                     .position(location)
-                    .title("Updated " + terakirUpdate));
+                    .title("Updated " + terakhirUpdate));
 
             gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
         }
     }
+
 }
