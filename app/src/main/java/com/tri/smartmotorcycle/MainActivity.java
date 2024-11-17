@@ -106,10 +106,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     selectedFragment = new MapsFragment();
 //                    addVehicle("supra");
                     break;
-                case 2:
-                    selectedFragment = new ProfileFragment();
-//                    addVehicle("revo");
-                    break;
+//                case 2:
+//                    selectedFragment = new ProfileFragment();
+////                    addVehicle("revo");
+//                    break;
                 default:
                     return false;
             }

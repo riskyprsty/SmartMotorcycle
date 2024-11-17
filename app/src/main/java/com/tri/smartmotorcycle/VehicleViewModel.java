@@ -19,6 +19,7 @@ public class VehicleViewModel extends ViewModel {
     private final MutableLiveData<Boolean> isPowerOn = new MutableLiveData<>();
 
     private final MutableLiveData<Double> temperatureData = new MutableLiveData<>();
+    private final MutableLiveData<Double> humidityData = new MutableLiveData<>();
 
     private final MutableLiveData<Double> latitude = new MutableLiveData<>();
     private final MutableLiveData<Double> longitude = new MutableLiveData<>();
@@ -29,6 +30,10 @@ public class VehicleViewModel extends ViewModel {
     private final MutableLiveData<String> modemImsi = new MutableLiveData<>();
     private final MutableLiveData<String> modemIpAddress = new MutableLiveData<>();
     private final MutableLiveData<Integer> modemSignalStrength = new MutableLiveData<>();
+
+    private final MutableLiveData<Double> voltage = new MutableLiveData<>();
+
+    private final MutableLiveData<Double> humidity = new MutableLiveData<>();
 
 
     private DatabaseReference firebaseRef;
@@ -47,6 +52,10 @@ public class VehicleViewModel extends ViewModel {
 
     public LiveData<Double> getTemperatureData() {
         return temperatureData;
+    }
+
+    public LiveData<Double> getHumidityData() {
+        return humidityData;
     }
 
     public LiveData<Double> getLatitude() {
@@ -81,6 +90,12 @@ public class VehicleViewModel extends ViewModel {
         return modemIpAddress;
     }
 
+    public LiveData<Double> getVoltage() {
+        return voltage;
+    }
+
+
+
     public void setSelectedVehicleId(String vehicleId) {
         if (!vehicleId.equals(selectedVehicleId.getValue())) {
             selectedVehicleId.setValue(vehicleId);
@@ -88,6 +103,7 @@ public class VehicleViewModel extends ViewModel {
             loadLocationData(vehicleId);
             loadMasterSwitch(vehicleId);
             loadModemData(vehicleId);
+            loadElectricityData(vehicleId);
         }
     }
 
@@ -131,22 +147,26 @@ public class VehicleViewModel extends ViewModel {
     // ambil data temperaturenya rek
     private void loadTemperatureData(String vehicleId) {
         if (firebaseRef != null) {
-            firebaseRef.child(vehicleId).child("monitoring").child("temperature")
+            firebaseRef.child(vehicleId).child("monitoring")
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            Double temperature = dataSnapshot.getValue(Double.class);
-                            if (temperature != null) {
-                                Log.d("VehicleViewModel", "Temperature data retrieved: " + temperature);
+                            Double temperature = dataSnapshot.child("temperature").getValue(Double.class);
+                            Double humidity = dataSnapshot.child("humidity").getValue(Double.class);
+
+
+                            if (temperature != null && humidity != null) {
+                                Log.d("VehicleViewModel", "Temperature data retrieved: Temp =" + temperature + " Humidity =" + humidity);
+                                temperatureData.setValue(temperature);
+                                humidityData.setValue(humidity);
                             } else {
-                                Log.d("VehicleViewModel", "Temperature data is null");
+                                Log.d("VehicleViewModel", "Data DHT masih kosong");
                             }
-                            temperatureData.setValue(temperature);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            Log.e("VehicleViewModel", "Failed to load temperature data.", databaseError.toException());
+                            Log.e("VehicleViewModel", "Failed to load electric data.", databaseError.toException());
                         }
                     });
         }
@@ -208,6 +228,32 @@ public class VehicleViewModel extends ViewModel {
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                             Log.e("VehicleViewModel", "Failed to load mofrm data.", databaseError.toException());
+                        }
+                    });
+        }
+    }
+
+
+    private void loadElectricityData(String vehicleId) {
+        if (firebaseRef != null) {
+            firebaseRef.child(vehicleId).child("electricity")
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Double volt = dataSnapshot.child("voltage").getValue(Double.class);
+
+
+                            if (volt != null) {
+                                Log.d("VehicleViewModel", "Aki data retrieved: Volt =" + volt);
+                                voltage.setValue(volt);
+                            } else {
+                                Log.d("VehicleViewModel", "Data aki masih kosong");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.e("VehicleViewModel", "Failed to load electric data.", databaseError.toException());
                         }
                     });
         }

@@ -24,7 +24,7 @@ public class HomeFragment extends Fragment {
     private TextView locationText;
     private ImageView hexagon;
     private VehicleViewModel vehicleViewModel;
-    private TextView vehicleName, operatorName, signalStrength, imeiText, imsiText, ipAddress;
+    private TextView vehicleName, operatorName, signalStrength, imeiText, imsiText, ipAddress, voltageText, temperatureText, humidityText;
 
     Animation Rotate_Animation, Bottom_Animation, Left_Animation;
 
@@ -40,10 +40,15 @@ public class HomeFragment extends Fragment {
         imeiText = view.findViewById(R.id.imei);
         imsiText = view.findViewById(R.id.imsi);
         ipAddress = view.findViewById(R.id.ip_address);
+        voltageText = view.findViewById(R.id.voltage_text);
+        temperatureText = view.findViewById(R.id.temp_value);
+        humidityText = view.findViewById(R.id.humidity_value);
         hexagon = view.findViewById(R.id.power_circle);
 
         final LottieAnimationView lottiePowerButton = view.findViewById(R.id.powerButton);
         final LottieAnimationView lottieSignalWidget = view.findViewById(R.id.signal_animation);
+        final LottieAnimationView lottieBatteryWidget = view.findViewById(R.id.battery_animation);
+        final LottieAnimationView lottieTemperatureWidget = view.findViewById(R.id.temperature_animation);
 
         vehicleViewModel = new ViewModelProvider(requireActivity()).get(VehicleViewModel.class);
 
@@ -54,6 +59,7 @@ public class HomeFragment extends Fragment {
                 vehicleName.setText("Scan QR untuk menambahkan Vehicle");
             }
         });
+
 //        vehicleViewModel.getTemperatureData().observe(getViewLifecycleOwner(), temperature -> {
 //            if (temperature != null) {
 //                textField2.setText(String.format(Locale.getDefault(), "%.2f °C", temperature));
@@ -88,6 +94,28 @@ public class HomeFragment extends Fragment {
                 lottieSignalWidget.playAnimation();
             }
         });
+        vehicleViewModel.getVoltage().observe(getViewLifecycleOwner(), voltage -> {
+            updateElectricityText();
+
+            if (voltage != null) {
+                if (voltage < 5) {
+                    lottieBatteryWidget.setMinAndMaxProgress(0.0f, 0.1f);
+                } else if (voltage < 10) {
+                    lottieBatteryWidget.setMinAndMaxProgress(0.2f, 0.3f);
+                } else {
+                    lottieBatteryWidget.setMinAndMaxProgress(0.3f, 0.6f);
+                }
+            }
+            lottieBatteryWidget.playAnimation();
+        });
+
+        vehicleViewModel.getTemperatureData().observe(getViewLifecycleOwner(), temperature -> {
+            updateTemperatureText();
+            lottieTemperatureWidget.setMinAndMaxProgress(0.0f, 0.5f);
+            lottieTemperatureWidget.playAnimation();
+        });
+
+        vehicleViewModel.getHumidityData().observe(getViewLifecycleOwner(), humidity -> updateTemperatureText());
 
         Rotate_Animation = AnimationUtils.loadAnimation(getContext(), R.anim.fadeanim);
 //        locationText.setAnimation(Rotate_Animation);
@@ -135,6 +163,35 @@ public class HomeFragment extends Fragment {
             ipAddress.setText("0.0.0.0");
         }
 
+    }
+
+    private void updateElectricityText() {
+        Double voltage = vehicleViewModel.getVoltage().getValue();
+
+        if (voltage != null) {
+            String voltageInfo = String.format(Locale.getDefault(),
+                    "%.2f V", voltage);
+            voltageText.setText(voltageInfo);
+        } else {
+            voltageText.setText("N/A V");
+        }
+    }
+
+    private void updateTemperatureText() {
+        Double temperature = vehicleViewModel.getTemperatureData().getValue();
+        Double humidity = vehicleViewModel.getHumidityData().getValue();
+
+        if (temperature != null && humidity != null) {
+            String temperatureInfo = String.format(Locale.getDefault(),
+                    "%.2f° Celcius", temperature);
+
+            String humidityInfo = String.format(Locale.getDefault(), "%.2f%% Humidity", humidity);
+            temperatureText.setText(temperatureInfo);
+            humidityText.setText(humidityInfo);
+        } else {
+            humidityText.setText("N/A %");
+            temperatureText.setText("N/A° Celcius");
+        }
     }
 
 //    private void updateLocationText() {
