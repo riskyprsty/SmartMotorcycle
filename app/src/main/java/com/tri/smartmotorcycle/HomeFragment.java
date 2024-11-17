@@ -24,7 +24,7 @@ public class HomeFragment extends Fragment {
     private TextView locationText;
     private ImageView hexagon;
     private VehicleViewModel vehicleViewModel;
-    private TextView vehicleName;
+    private TextView vehicleName, operatorName, signalStrength, imeiText, imsiText, ipAddress;
 
     Animation Rotate_Animation, Bottom_Animation, Left_Animation;
 
@@ -33,10 +33,17 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        locationText = view.findViewById(R.id.test);
+//        locationText = view.findViewById(R.id.test);
         vehicleName = view.findViewById(R.id.vehicle_name);
+        operatorName = view.findViewById(R.id.operator_name);
+        signalStrength = view.findViewById(R.id.strength);
+        imeiText = view.findViewById(R.id.imei);
+        imsiText = view.findViewById(R.id.imsi);
+        ipAddress = view.findViewById(R.id.ip_address);
         hexagon = view.findViewById(R.id.power_circle);
+
         final LottieAnimationView lottiePowerButton = view.findViewById(R.id.powerButton);
+        final LottieAnimationView lottieSignalWidget = view.findViewById(R.id.signal_animation);
 
         vehicleViewModel = new ViewModelProvider(requireActivity()).get(VehicleViewModel.class);
 
@@ -55,12 +62,35 @@ public class HomeFragment extends Fragment {
 //            }
 //        });
 
-        vehicleViewModel.getLatitude().observe(getViewLifecycleOwner(), latitude -> updateLocationText());
-        vehicleViewModel.getLongitude().observe(getViewLifecycleOwner(), longitude -> updateLocationText());
-        vehicleViewModel.getTimestamp().observe(getViewLifecycleOwner(), timestamp -> updateLocationText());
+//        vehicleViewModel.getLatitude().observe(getViewLifecycleOwner(), latitude -> updateLocationText());
+//        vehicleViewModel.getLongitude().observe(getViewLifecycleOwner(), longitude -> updateLocationText());
+//        vehicleViewModel.getTimestamp().observe(getViewLifecycleOwner(), timestamp -> updateLocationText());
+
+        vehicleViewModel.getModemOperator().observe(getViewLifecycleOwner(), operator -> updateModemText());
+        vehicleViewModel.getModemImei().observe(getViewLifecycleOwner(), imei -> updateModemText());
+        vehicleViewModel.getModemImsi().observe(getViewLifecycleOwner(), imsi -> updateModemText());
+        vehicleViewModel.getModemIpAddress().observe(getViewLifecycleOwner(), ip_address -> updateModemText());
+        vehicleViewModel.getModemSignalStrength().observe(getViewLifecycleOwner(), signal_strength -> {
+            updateModemText();
+
+            if (signal_strength != null) {
+                if (signal_strength < 10) {
+                    lottieSignalWidget.setMinAndMaxProgress(0.0f, 0.1f);
+                } else if (signal_strength < 20) {
+                    lottieSignalWidget.setMinAndMaxProgress(0.1f, 0.2f);
+                } else if (signal_strength < 30) {
+                    lottieSignalWidget.setMinAndMaxProgress(0.2f, 0.3f);
+                } else if (signal_strength < 40) {
+                    lottieSignalWidget.setMinAndMaxProgress(0.3f, 0.4f);
+                } else if (signal_strength > 50) {
+                    lottieSignalWidget.setMinAndMaxProgress(0.4f, 0.5f);
+                }
+                lottieSignalWidget.playAnimation();
+            }
+        });
 
         Rotate_Animation = AnimationUtils.loadAnimation(getContext(), R.anim.fadeanim);
-        locationText.setAnimation(Rotate_Animation);
+//        locationText.setAnimation(Rotate_Animation);
         hexagon.setAnimation(Rotate_Animation);
 
         vehicleViewModel.getPowerStatus().observe(getViewLifecycleOwner(), isPowerOn -> {
@@ -82,18 +112,43 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    private void updateLocationText() {
-        Double latitude = vehicleViewModel.getLatitude().getValue();
-        Double longitude = vehicleViewModel.getLongitude().getValue();
-        Long timestamp = vehicleViewModel.getTimestamp().getValue();
+    private void updateModemText() {
+        String operator = vehicleViewModel.getModemOperator().getValue();
+        String imei = vehicleViewModel.getModemImei().getValue();
+        String imsi = vehicleViewModel.getModemImsi().getValue();
+        String ip_address = vehicleViewModel.getModemIpAddress().getValue();
+        Integer signal_strength = vehicleViewModel.getModemSignalStrength().getValue();
+        String signal = String.format(Locale.getDefault(), "Signal Strength: %d dBm", signal_strength);
 
-        if (latitude != null && longitude != null && timestamp != null) {
-            String locationInfo = String.format(Locale.getDefault(),
-                    "Lat: %.6f\nLng: %.6f\nTimestamp: %d", latitude, longitude, timestamp);
-            locationText.setText(locationInfo);
+        if (operator != null && imei != null && imsi != null && ip_address != null && signal_strength != null) {
+            operatorName.setText(operator);
+            signalStrength.setText(signal);
+            imeiText.setText("IMEI: " + imei);
+            imsiText.setText("IMSI: " + imsi);
+            ipAddress.setText(ip_address);
+
         } else {
-            locationText.setText("Location: N/A");
+            operatorName.setText("N/A");
+            signalStrength.setText("Signal Strength: " + 0 + "dBm");
+            imeiText.setText("IMEI: " + "N/A");
+            imsiText.setText("IMSI: " + "N/A");
+            ipAddress.setText("0.0.0.0");
         }
+
     }
+
+//    private void updateLocationText() {
+//        Double latitude = vehicleViewModel.getLatitude().getValue();
+//        Double longitude = vehicleViewModel.getLongitude().getValue();
+//        Long timestamp = vehicleViewModel.getTimestamp().getValue();
+//
+//        if (latitude != null && longitude != null && timestamp != null) {
+//            String locationInfo = String.format(Locale.getDefault(),
+//                    "Lat: %.6f\nLng: %.6f\nTimestamp: %d", latitude, longitude, timestamp);
+//            locationText.setText(locationInfo);
+//        } else {
+//            locationText.setText("Location: N/A");
+//        }
+//    }
 }
 
